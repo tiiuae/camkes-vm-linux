@@ -141,12 +141,20 @@ endfunction()
 # by the vm project
 # dest_file: caller variable which is set with the kernel location
 function(GetDefaultLinuxKernelFile dest_file)
-    set(${dest_file} ${VM_LINUX_PROJECT_DIR}/images/kernel/default_bzimage_4.8.16 PARENT_SCOPE)
+  if(KernelSel4ArchX86_64)
+    set(${dest_file} ${VM_LINUX_PROJECT_DIR}/images/kernel/64/default_bzimage_4.8.16 PARENT_SCOPE)
+  else()
+    set(${dest_file} ${VM_LINUX_PROJECT_DIR}/images/kernel/32/default_bzimage_4.8.16 PARENT_SCOPE)
+  endif()
 endfunction(GetDefaultLinuxKernelFile)
 
 # Function for getting the default location of the Linux guest rootfs provided
 # by the vm project
 # dest_file: caller variable which is set with the rootfs location
 function(GetDefaultLinuxRootfsFile dest_file)
-    set(${dest_file} ${VM_LINUX_PROJECT_DIR}/images/rootfs/default_buildroot_rootfs.cpio PARENT_SCOPE)
+  if(KernelSel4ArchX86_64)
+    set(${dest_file} ${VM_LINUX_PROJECT_DIR}/images/rootfs/64/buildroot_rootfs-bare.cpio PARENT_SCOPE)
+  else()
+    set(${dest_file} ${VM_LINUX_PROJECT_DIR}/images/rootfs/32/buildroot_rootfs-bare.cpio PARENT_SCOPE)
+  endif()
 endfunction(GetDefaultLinuxRootfsFile)

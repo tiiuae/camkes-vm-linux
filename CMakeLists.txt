@@ -34,8 +34,15 @@ if(CAmkESVMDefaultBuildrootOverlay)
     # Add packages,libs and modules used in the linux vm
     set(binary_dir ${CMAKE_BINARY_DIR}/camkes-linux-artifacts)
 
-    # Get Custom toolchain for 32 bit Linux
-    FindCustomPollyToolchain(LINUX_32BIT_TOOLCHAIN "linux-gcc-32bit-pic")
+    if(KernelSel4ArchX86_64)
+      # Get Custom toolchain for 64-bit Linux
+      FindCustomPollyToolchain(LINUX_TOOLCHAIN "linux-gcc-64bit-pic")
+      set(arch_size_dir "64")
+    else()
+      # Get Custom toolchain for 32-bit Linux
+      FindCustomPollyToolchain(LINUX_TOOLCHAIN "linux-gcc-32bit-pic")
+      set(arch_size_dir "32")
+    endif()
 
     # Setup Linux Sources
     GetDefaultLinuxMajor(linux_major)
@@ -43,8 +50,8 @@ if(CAmkESVMDefaultBuildrootOverlay)
     GetDefaultLinuxMd5(linux_md5)
     DownloadLinux(${linux_major} ${linux_minor} ${linux_md5} vm_linux_extract_dir download_vm_linux)
     # Linux config and symvers are to be copied to unpacked archive
-    set(linux_config "${CMAKE_CURRENT_SOURCE_DIR}/linux_configs/${linux_major}.${linux_minor}/config")
-    set(linux_symvers "${CMAKE_CURRENT_SOURCE_DIR}/linux_configs/${linux_major}.${linux_minor}/Module.symvers")
+    set(linux_config "${CMAKE_CURRENT_SOURCE_DIR}/linux_configs/${linux_major}.${linux_minor}/${arch_size_dir}/config")
+    set(linux_symvers "${CMAKE_CURRENT_SOURCE_DIR}/linux_configs/${linux_major}.${linux_minor}/${arch_size_dir}/Module.symvers")
     # Configure unpacked archive with config and symvers
     ConfigureLinux(${vm_linux_extract_dir} ${linux_config} ${linux_symvers} configure_vm_linux
         DEPENDS download_vm_linux
@@ -114,7 +121,7 @@ if(CAmkESVMDefaultBuildrootOverlay)
             INSTALL_COMMAND ""
             CMAKE_ARGS
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-                -DCMAKE_TOOLCHAIN_FILE=${LINUX_32BIT_TOOLCHAIN}
+                -DCMAKE_TOOLCHAIN_FILE=${LINUX_TOOLCHAIN}
         )
         # Build vchan modules
         set(vchan_modules_stamp_dir ${CMAKE_CURRENT_BINARY_DIR}/camkes-vchan-modules-stamp)
@@ -130,7 +137,7 @@ if(CAmkESVMDefaultBuildrootOverlay)
             DEPENDS download_vm_linux configure_vm_linux
             CMAKE_ARGS
                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-                -DCMAKE_TOOLCHAIN_FILE=${LINUX_32BIT_TOOLCHAIN}
+                -DCMAKE_TOOLCHAIN_FILE=${LINUX_TOOLCHAIN}
                 -DCROSSVM_SRC=${CMAKE_CURRENT_SOURCE_DIR}/../vm/libs/libcrossvm
                 -DVCHAN_INCLUDE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/camkes-linux-artifacts/camkes-linux-apps/camkes-vchan-apps/libs/vchan/includes
                 -DMODULE_HELPERS_FILE=${CMAKE_CURRENT_SOURCE_DIR}/linux-module-helpers.cmake
