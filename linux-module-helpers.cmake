@@ -54,7 +54,7 @@ function(DefineLinuxModule module_dir output_module_location output_module_targe
         COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/${module_name}
         COMMAND
             bash -c
-            "make ${compile_flags} MODULE_INCLUDES=\"${module_includes}\" KHEAD=${DEFINE_LINUX_MODULE_KERNEL_DIR}"
+            "make ${compile_flags} MODULE_INCLUDES=\"${module_includes}\" KERNEL_SRC=${DEFINE_LINUX_MODULE_KERNEL_DIR}"
         COMMAND
             ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${module_name}/${module_name}.ko"
             "${CMAKE_CURRENT_BINARY_DIR}/${module_name}.ko"

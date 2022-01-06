@@ -11,7 +11,7 @@ ifneq ($(MODULE_INCLUDES),)
 endif
 
 all:
-	make -C $(KHEAD) M=$(PWD) modules
+	make -C $(KERNEL_SRC) M=$(PWD) modules
 
 clean:
-	make -C $(KHEAD) M=$(PWD) clean
+	make -C $(KERNEL_SRC) M=$(PWD) clean
